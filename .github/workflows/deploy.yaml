@@ -12,8 +12,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - run: docker build -t bogda/react -f Dockerfile.dev .
       - run: docker run -e CI=true bogda/react npm test
       - run: docker build -t bogda/react-prod -f Dockerfile .
