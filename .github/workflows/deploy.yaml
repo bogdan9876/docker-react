@@ -12,9 +12,8 @@ jobs:
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - run: docker build -t bogda/react -f Dockerfile.dev .
       - run: docker run -e CI=true bogda/react npm test
-
-      - name: Generate deployment package
-        run: zip -r deploy.zip . -x '*.git*'
+      - run: docker build -t bogda/react-prod -f Dockerfile .
+      - run: docker push bogda/react-prod
 
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v18
@@ -23,8 +22,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: docker
           environment_name: docker-env
-          existing_bucket_name: elasticbeanstalk-us-east-1-654654330473
           region: us-east-1
           version_label: ${{ github.sha }}
-          deployment_package: deploy.zip
-          use_existing_version_if_available: true
+          image_name: bogda/react-prod
